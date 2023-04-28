@@ -1,0 +1,124 @@
+[12:43 PM, 4/27/2023] Rajesh More: public class Product
+{
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+    public int CategoryId { get; set; }
+    public Category Category { get; set; }
+}
+
+public interface IProductRepository
+{
+    void Add(Product product);
+    void Update(Product product);
+    void Delete(int productId);
+    Product GetById(int productId);
+    IEnumerable<Product> GetAll();
+}
+
+public class ProductRepository : IProductRepository
+{
+    private readonly DbContext _dbContext;
+
+    public ProductRepository(DbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public void Add(Product product)
+    {
+        _dbContext.Set<Product>().Add(product);
+        _dbContext.SaveChanges();
+    }
+
+    public void Update(Product product)
+    {
+        _dbContext.Entry(product).State = EntityState.Modified;
+        _dbContext.SaveChanges();
+    }
+
+    public void Delete(int productId)
+    {
+        var product = GetById(productId);
+        if (product != null)
+        {
+            _dbContext.Set<Product>().Remove(product);
+            _dbContext.SaveChanges();
+        }
+    }
+
+    public Product GetById(int productId)
+    {
+        return _dbContext.Set<Product>()
+            .Include(p => p.Category)
+            .FirstOrDefault(p => p.ProductId == productId);
+    }
+
+    public IEnumerable<Product> GetAll()
+    {
+        return _dbContext.Set<Product>()
+            .Include(p => p.Category)
+            .ToList();
+    }
+}
+[12:43 PM, 4/27/2023] Rajesh More: public class Product
+{
+    public int ProductId { get; set; }
+    public string ProductName { get; set; }
+    public int CategoryId { get; set; }
+    public Category Category { get; set; }
+}
+
+public interface IProductRepository
+{
+    void Add(Product product);
+    void Update(Product product);
+    void Delete(int productId);
+    Product GetById(int productId);
+    IEnumerable<Product> GetAll();
+}
+
+public class ProductRepository : IProductRepository
+{
+    private readonly DbContext _dbContext;
+
+    public ProductRepository(DbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public void Add(Product product)
+    {
+        _dbContext.Set<Product>().Add(product);
+        _dbContext.SaveChanges();
+    }
+
+    public void Update(Product product)
+    {
+        _dbContext.Entry(product).State = EntityState.Modified;
+        _dbContext.SaveChanges();
+    }
+
+    public void Delete(int productId)
+    {
+        var product = GetById(productId);
+        if (product != null)
+        {
+            _dbContext.Set<Product>().Remove(product);
+            _dbContext.SaveChanges();
+        }
+    }
+
+    public Product GetById(int productId)
+    {
+        return _dbContext.Set<Product>()
+            .Include(p => p.Category)
+            .FirstOrDefault(p => p.ProductId == productId);
+    }
+
+    public IEnumerable<Product> GetAll()
+    {
+        return _dbContext.Set<Product>()
+            .Include(p => p.Category)
+            .ToList();
+    }
+}

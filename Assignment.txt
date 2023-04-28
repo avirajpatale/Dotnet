@@ -1,0 +1,56 @@
+public class Category
+{
+    public int CategoryId { get; set; }
+    public string CategoryName { get; set; }
+}
+
+public interface ICategoryRepository
+{
+    void Add(Category category);
+    void Update(Category category);
+    void Delete(int categoryId);
+    Category GetById(int categoryId);
+    IEnumerable<Category> GetAll();
+}
+
+public class CategoryRepository : ICategoryRepository
+{
+    private readonly DbContext _dbContext;
+
+    public CategoryRepository(DbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public void Add(Category category)
+    {
+        _dbContext.Set<Category>().Add(category);
+        _dbContext.SaveChanges();
+    }
+
+    public void Update(Category category)
+    {
+        _dbContext.Entry(category).State = EntityState.Modified;
+        _dbContext.SaveChanges();
+    }
+
+    public void Delete(int categoryId)
+    {
+        var category = GetById(categoryId);
+        if (category != null)
+        {
+            _dbContext.Set<Category>().Remove(category);
+            _dbContext.SaveChanges();
+        }
+    }
+
+    public Category GetById(int categoryId)
+    {
+        return _dbContext.Set<Category>().Find(categoryId);
+    }
+
+    public IEnumerable<Category> GetAll()
+    {
+        return _dbContext.Set<Category>().ToList();
+    }
+}
